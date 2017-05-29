@@ -44,20 +44,20 @@ describe('Oracle dialect', function () {
         });
 
         it('should serialize raw conditions', function (done) {
-            let statement = sqb.select().from('table1').where([sqb.raw('ID=1')]);
+            let statement = sqb.select().from('table1').where([sqb.raw('ID=1')], ['ID2', sqb.raw('1')]);
             let result = statement.build({
                 dialect: 'oracle'
             });
-            assert.equal(result.sql, "select * from table1 where ID=1");
+            assert.equal(result.sql, "select * from table1 where ID=1 and ID2 = 1");
             done();
         });
 
         it('should serialize "limit"', function (done) {
-            let statement = sqb.select().from('table1').limit(10);
+            let statement = sqb.select().from('table1').alias('t1').limit(10);
             let result = statement.build({
                 dialect: 'oracle'
             });
-            assert.equal(result.sql, "select * from (select rownum row$number, t.* from (select * from table1) t) where row$number <= 10");
+            assert.equal(result.sql, "select t1.* from (select rownum row$number, t.* from (select * from table1) t) t1 where row$number <= 10");
             done();
         });
 

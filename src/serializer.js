@@ -27,7 +27,7 @@ class OracleSerializer extends Serializer {
             offset = obj._offset;
         if (limit || offset) {
             sql =
-                'select * from (select rownum row$number, t.* from (' +
+                'select ' + (obj._alias ? obj._alias + '.' : '') + '* from (select rownum row$number, t.* from (' +
                 (prettyPrint ? '\n  ' : '') +
                 sql +
                 (prettyPrint ? '\n' : '') +
