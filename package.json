@@ -1,7 +1,7 @@
 {
   "name": "sqb-serializer-oracle",
   "description": "SQB serialization plugin for Oracle database",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Panates Ltd.",
   "contributors": [
     "Eray Hanoglu <e.hanoglu@panates.com>"
@@ -18,8 +18,7 @@
     "database",
     "interface"
   ],
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^7.2.3",
     "eslint": "^3.19.0",
