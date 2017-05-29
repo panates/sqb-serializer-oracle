@@ -6,6 +6,7 @@
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![Dependencies][dependencies-image]][dependencies-url]
 [![DevDependencies][devdependencies-image]][devdependencies-url]
+[![PeerDependencies][peerdependencies-image]][peerdependencies-url]
 
 SQB-serialization plugin for Oracle dialect
 
@@ -28,3 +29,5 @@ SQB-serialization plugin for Oracle dialect
 [dependencies-url]:https://david-dm.org/panates/sqb-serializer-oracle#info=dependencies
 [devdependencies-image]: https://david-dm.org/panates/sqb-serializer-oracle/dev-status.svg
 [devdependencies-url]:https://david-dm.org/panates/sqb-serializer-oracle?type=dev
+[peerdependencies-image]: https://david-dm.org/panates/sqb-serializer-oracle/peer-status.svg
+[peerdependencies-url]:https://david-dm.org/panates/sqb-serializer-oracle?type=peer
