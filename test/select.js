@@ -25,12 +25,30 @@ describe('Oracle dialect', function () {
             done();
         });
 
-        it('should serialize date', function (done) {
+        it('should serialize date-time', function (done) {
             let statement = sqb.select().from('table1').where(['ID', new Date(2017, 0, 1, 10, 30, 15)]);
             let result = statement.build({
                 dialect: 'oracle'
             });
             assert.equal(result.sql, "select * from table1 where ID = to_date('2017-01-01 10:30:15', 'yyyy-mm-dd hh24:mi:ss')");
+            done();
+        });
+
+        it('should serialize date', function (done) {
+            let statement = sqb.select().from('table1').where(['ID', new Date(2017, 0, 1, 0, 0, 0)]);
+            let result = statement.build({
+                dialect: 'oracle'
+            });
+            assert.equal(result.sql, "select * from table1 where ID = to_date('2017-01-01', 'yyyy-mm-dd')");
+            done();
+        });
+
+        it('should serialize raw conditions', function (done) {
+            let statement = sqb.select().from('table1').where([sqb.raw('ID=1')]);
+            let result = statement.build({
+                dialect: 'oracle'
+            });
+            assert.equal(result.sql, "select * from table1 where ID=1");
             done();
         });
 
