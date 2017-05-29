@@ -16,12 +16,30 @@ describe('Oracle dialect', function () {
             done();
         });
 
-        it('should replace "=" to "is" when value is null', function (done) {
+        it('should replace "= null" to "is null"', function (done) {
             let statement = sqb.select().from().where(['ID', null]);
             let result = statement.build({
                 dialect: 'oracle'
             });
             assert.equal(result.sql, 'select * from dual where ID is null');
+            done();
+        });
+
+        it('should replace "!= null" to "is not null"', function (done) {
+            let statement = sqb.select().from().where(['ID', '!=', null]);
+            let result = statement.build({
+                dialect: 'oracle'
+            });
+            assert.equal(result.sql, 'select * from dual where ID is not null');
+            done();
+        });
+
+        it('should replace "<> null" to "is not null"', function (done) {
+            let statement = sqb.select().from().where(['ID', '!=', null]);
+            let result = statement.build({
+                dialect: 'oracle'
+            });
+            assert.equal(result.sql, 'select * from dual where ID is not null');
             done();
         });
 
