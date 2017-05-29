@@ -7,7 +7,7 @@
 [![Dependencies][dependencies-image]][dependencies-url]
 [![DevDependencies][devdependencies-image]][devdependencies-url]
 
-SQB-connect is connection plugin for Oracle database using "oracledb" library
+SQB-serialization plugin for Oracle dialect
 
 ## Node Compatibility
 
