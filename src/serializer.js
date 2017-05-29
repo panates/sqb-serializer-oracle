@@ -7,7 +7,7 @@
  */
 
 /* External module dependencies. */
-const {Serializer} = require('sqb-serializer-oracle');
+const {Serializer} = require('sqb');
 
 class OracleSerializer extends Serializer {
 
