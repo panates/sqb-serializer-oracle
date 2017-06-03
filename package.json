@@ -27,7 +27,7 @@
     "mocha": "^3.4.2"
   },
   "peerDependencies": {
-    "sqb": "^0.2.9"
+    "sqb": "^0.2.15"
   },
   "engines": {
     "node": ">= 6.0"

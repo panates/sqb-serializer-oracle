@@ -62,7 +62,7 @@ describe('Oracle dialect', function () {
         });
 
         it('should serialize raw conditions', function (done) {
-            let statement = sqb.select().from('table1').where([sqb.raw('ID=1')], sqb.raw('ID2 = 1'));
+            let statement = sqb.select().from('table1').where(sqb.raw('ID=1'), sqb.raw('ID2 = 1'));
             let result = statement.build({
                 dialect: 'oracle'
             });
@@ -71,7 +71,7 @@ describe('Oracle dialect', function () {
         });
 
         it('should serialize "limit"', function (done) {
-            let statement = sqb.select().from('table1').alias('t1').limit(10);
+            let statement = sqb.select().from('table1').as('t1').limit(10);
             let result = statement.build({
                 dialect: 'oracle'
             });
