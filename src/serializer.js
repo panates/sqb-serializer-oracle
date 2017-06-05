@@ -13,7 +13,6 @@ class OracleSerializer extends Serializer {
 
   constructor(config) {
     super(config);
-    this.dialect = 'oracle';
     this.reservedWords = this.reservedWords.concat(['comment', 'dual']);
   }
 
@@ -21,10 +20,10 @@ class OracleSerializer extends Serializer {
   /**
    * @override
    */
-  _serializeSelect(obj) {
-    let sql = super._serializeSelect(obj);
+  _serializeSelect(obj, inf) {
+    let sql = super._serializeSelect(obj, inf);
     const prettyPrint = this.prettyPrint;
-    const limit = obj._limit;
+    const limit = this.statement._limit;
     const offset = obj._offset;
     if (limit || offset) {
       sql =
@@ -46,16 +45,16 @@ class OracleSerializer extends Serializer {
   /**
    * @override
    */
-  _serializeTablesNames(tables) {
-    return super._serializeTablesNames(tables) || 'dual';
+  _serializeTablesNames(tables, inf) {
+    return super._serializeTablesNames(tables, inf) || 'dual';
   }
 
   //noinspection JSUnusedGlobalSymbols
   /**
    * @override
    */
-  _serializeCondition(item) {
-    let s = super._serializeCondition(item);
+  _serializeCondition(item, inf) {
+    let s = super._serializeCondition(item, inf);
     if (!item.isRaw) {
       s = s.replace(/!= ?null/g, 'is not null')
           .replace(/<> ?null/g, 'is not null')
@@ -68,8 +67,8 @@ class OracleSerializer extends Serializer {
   /**
    * @override
    */
-  _serializeDateValue(date) {
-    const s = super._serializeDateValue(date);
+  _serializeDateValue(date, inf) {
+    const s = super._serializeDateValue(date, inf);
     return s.length <= 12 ?
         'to_date(' + s + ', \'yyyy-mm-dd\')' :
         'to_date(' + s + ', \'yyyy-mm-dd hh24:mi:ss\')';
