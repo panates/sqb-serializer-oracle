@@ -7,7 +7,7 @@
  */
 
 /* External module dependencies. */
-const {Serializer} = require('sqb');
+const {Serializer, StringBuilder} = require('sqb');
 
 class OracleSerializer extends Serializer {
 
@@ -25,18 +25,38 @@ class OracleSerializer extends Serializer {
     const prettyPrint = this.prettyPrint;
     const limit = this.statement._limit;
     const offset = obj._offset;
+
     if (limit || offset) {
-      sql =
-          'select ' + (obj._alias ? obj._alias + '.' : '') +
-          '* from (select rownum row$number, t.* from (' +
-          (prettyPrint ? '\n  ' : '') +
-          sql +
-          (prettyPrint ? '\n' : '') +
-          ') t)' + (obj._alias ? ' ' + obj._alias : '') +
-          (prettyPrint ? '\nwhere' : ' where') +
-          (offset ? ' row$number >= ' + offset : '') +
-          (limit ? (offset ? ' and' : '') + ' row$number <= ' +
-              (limit + (offset || 0)) : '');
+      const sb = new StringBuilder(this.prettyPrint ? 180 : 0);
+      const cr = (prettyPrint ? '\n  ' : '');
+      sb.indent = 2;
+
+      const order = this.statement._orderby;
+      if (order && order.length) {
+        sql =
+            'select ' + (obj._alias ? obj._alias + '.' : '') +
+            '* from (select rownum row$number, t.* from (' +
+            (prettyPrint ? '\n  ' : '') +
+            sql +
+            (prettyPrint ? '\n' : '') +
+            ') t)' + (obj._alias ? ' ' + obj._alias : '') +
+            (prettyPrint ? '\nwhere' : ' where') +
+            (offset ? ' row$number >= ' + offset : '') +
+            (limit ? (offset ? ' and' : '') + ' row$number <= ' +
+                (limit + (offset || 0)) : '');
+      } else {
+
+        sb.append('select ' + (obj._alias ? obj._alias + '.' : '') +
+            '* from (' + cr);
+        sb.append(sql);
+        sb.crlf();
+        sb.append(') where' +
+            (offset ? ' rownum >= ' + offset : '') +
+            (limit ? (offset ? ' and' : ' ') + 'rownum <= ' +
+                (limit + (offset || 0)) : '')
+        );
+        sql = sb.toString();
+      }
     }
     return sql;
   }
