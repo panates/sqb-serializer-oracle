@@ -7,7 +7,7 @@
  */
 
 /* External module dependencies. */
-const {Serializer, StringBuilder} = require('sqb');
+const {Serializer} = require('sqb');
 
 class OracleSerializer extends Serializer {
 
@@ -21,52 +21,45 @@ class OracleSerializer extends Serializer {
    * @override
    */
   _serializeSelect(obj, inf) {
-    let sql = super._serializeSelect(obj, inf);
-    const prettyPrint = this.prettyPrint;
+    let out = super._serializeSelect(obj, inf);
     const limit = this.statement._limit;
     const offset = obj._offset;
+    const a = obj._alias;
 
     if (limit || offset) {
-      const sb = new StringBuilder(this.prettyPrint ? 180 : 0);
-      const cr = (prettyPrint ? '\n  ' : '');
-      sb.indent = 2;
-
       const order = this.statement._orderby;
       if (order && order.length) {
-        sql =
-            'select ' + (obj._alias ? obj._alias + '.' : '') +
-            '* from (select rownum row$number, t.* from (' +
-            (prettyPrint ? '\n  ' : '') +
-            sql +
-            (prettyPrint ? '\n' : '') +
-            ') t)' + (obj._alias ? ' ' + obj._alias : '') +
-            (prettyPrint ? '\nwhere' : ' where') +
-            (offset ? ' row$number >= ' + offset : '') +
-            (limit ? (offset ? ' and' : '') + ' row$number <= ' +
-                (limit + (offset || 0)) : '');
-      } else {
+        out = 'select ' + (a ? a + '.' : '') +
+            '* from (select rownum row$number, t.* from (\n\t' +
+            out + '\n\b' +
+            ') t)' + (a ? ' ' + a : '') +
+            '\nwhere';
 
-        sb.append('select ' + (obj._alias ? obj._alias + '.' : '') +
-            '* from (' + cr);
-        sb.append(sql);
-        sb.crlf();
-        sb.append(') where' +
-            (offset ? ' rownum >= ' + offset : '') +
-            (limit ? (offset ? ' and' : ' ') + 'rownum <= ' +
-                (limit + (offset || 0)) : '')
-        );
-        sql = sb.toString();
+        if (offset)
+          out += ' row$number >= ' + offset;
+        if (limit)
+          out += (offset ? ' and' : '') + ' row$number <= ' +
+              (limit + (offset || 0));
+      } else {
+        out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
+            out + '\n\b' +
+            ') where';
+        if (offset)
+          out += ' rownum >= ' + offset;
+        if (limit)
+          out += (offset ? ' and' : '') + ' rownum <= ' +
+              (limit + (offset || 0));
       }
     }
-    return sql;
+    return out;
   }
 
   //noinspection JSUnusedGlobalSymbols
   /**
    * @override
    */
-  _serializeTablesNames(tables, inf) {
-    return super._serializeTablesNames(tables, inf) || 'dual';
+  _serializeFrom(tables, inf) {
+    return super._serializeFrom(tables, inf) || 'from dual';
   }
 
   //noinspection JSUnusedGlobalSymbols
