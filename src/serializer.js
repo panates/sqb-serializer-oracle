@@ -36,7 +36,7 @@ class OracleSerializer extends Serializer {
             '\nwhere';
 
         if (offset)
-          out += ' row$number >= ' + offset;
+          out += ' row$number > ' + offset;
         if (limit)
           out += (offset ? ' and' : '') + ' row$number <= ' +
               (limit + (offset || 0));
