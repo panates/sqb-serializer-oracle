@@ -28,7 +28,7 @@ class OracleSerializer extends Serializer {
 
     if (limit || offset) {
       const order = this.statement._orderby;
-      if (order && order.length) {
+      if (offset || (order && order.length)) {
         out = 'select ' + (a ? a + '.' : '') +
             '* from (select rownum row$number, t.* from (\n\t' +
             out + '\n\b' +
@@ -45,7 +45,7 @@ class OracleSerializer extends Serializer {
             out + '\n\b' +
             ') where';
         if (offset)
-          out += ' rownum >= ' + offset;
+          out += ' rownum > ' + offset;
         if (limit)
           out += (offset ? ' and' : '') + ' rownum <= ' +
               (limit + (offset || 0));
