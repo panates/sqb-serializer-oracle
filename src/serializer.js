@@ -23,24 +23,32 @@ class OracleSerializer extends Serializer {
   _serializeSelect(obj, inf) {
     let out = super._serializeSelect(obj, inf);
     const limit = this.statement._limit || 0;
-    const offset = obj._offset || 0;
-    const a = obj._alias;
+    const offset = Math.max((obj._offset || 0) - 1, 0);
 
     if (limit || offset) {
-      const order = this.statement._orderby;
-      if (offset || (order && order.length)) {
-        out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
-            'select /*+ first_rows(' + (limit || 100) +
-            ') */ rownum row$number, t.* from (\n\t' +
-            out + '\n\b' +
-            ') t' + (limit ? ' where rownum <= ' + (limit + offset - 1) : '') +
-            '\n\b)' + (a ? ' ' + a : '');
+      if (this.config.serverVersion >= 12) {
         if (offset)
-          out += ' where row$number >= ' + (offset);
+          out += (offset ? '\nOFFSET ' + offset + ' ROWS' : '') +
+              (limit ? ' FETCH NEXT ' + limit + ' ROWS ONLY' : '');
+        else out += (limit ? '\nFETCH FIRST ' + limit + ' ROWS ONLY' : '');
       } else {
-        out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
-            out + '\n\b' +
-            ') where rownum <= ' + limit;
+        const a = obj._alias;
+        const order = this.statement._orderby;
+        if (offset || (order && order.length)) {
+          out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
+              'select /*+ first_rows(' + (limit || 100) +
+              ') */ rownum row$number, t.* from (\n\t' +
+              out + '\n\b' +
+              ') t' +
+              (limit ? ' where rownum <= ' + (limit + offset) : '') +
+              '\n\b)' + (a ? ' ' + a : '');
+          if (offset)
+            out += ' where row$number >= ' + (offset + 1);
+        } else {
+          out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
+              out + '\n\b' +
+              ') where rownum <= ' + limit;
+        }
       }
     }
     return out;
