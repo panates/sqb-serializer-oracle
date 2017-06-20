@@ -76,7 +76,7 @@ describe('Oracle dialect', function() {
       done();
     });
 
-    it('should serialize "limit" w/o order', function(done) {
+    it('should serialize "limit"', function(done) {
       let statement = sqb.select().from('table1').as('t1').limit(10);
       let result = statement.build({
         dialect: 'oracle'
@@ -85,88 +85,79 @@ describe('Oracle dialect', function() {
       done();
     });
 
-    it('should serialize "limit" w/ order', function(done) {
-      let statement = sqb.select()
-          .from('table1')
-          .as('t1')
-          .orderBy('f1')
-          .limit(10);
+    it('should serialize "limit" pretty print', function(done) {
+      let statement = sqb.select().from('table1').as('t1').limit(10);
       let result = statement.build({
-        dialect: 'oracle'
+        dialect: 'oracle',
+        prettyPrint: true
       });
-      assert.equal(result.sql, 'select t1.* from (select rownum row$number, t.* from (select * from table1 order by f1) t) t1 where row$number <= 10');
+      assert.equal(result.sql,
+          'select t1.* from (\n' +
+          '  select * from table1\n' +
+          ') where rownum <= 10');
       done();
     });
 
-    it('should serialize "limit/offset" w/o order', function(done) {
-      let statement = sqb.select().from('table1').offset(5).limit(10);
-      let result = statement.build({
-        dialect: 'oracle'
-      });
-      assert.equal(result.sql, 'select * from (select * from table1) where rownum >= 5 and rownum <= 15');
-      done();
-    });
-
-    it('should serialize "limit/offset" w/ order', function(done) {
+    it('should serialize "limit/offset"', function(done) {
       let statement = sqb.select()
           .from('table1')
-          .orderBy('f1')
           .offset(5)
           .limit(10);
       let result = statement.build({
         dialect: 'oracle'
       });
-      assert.equal(result.sql, 'select * from (select rownum row$number, t.* from (select * from table1 order by f1) t) where row$number >= 5 and row$number <= 15');
+      assert.equal(result.sql, 'select * from (select /*+ first_rows(10) */ rownum row$number, t.* from (select * from table1) t where rownum <= 14) where row$number >= 5');
       done();
     });
 
-    it('should serialize "offset" w/o order', function(done) {
-      let statement = sqb.select().from('table1').offset(5);
-      let result = statement.build({
-        dialect: 'oracle'
-      });
-      assert.equal(result.sql, 'select * from (select * from table1) where rownum >= 5');
-      done();
-    });
-
-    it('should serialize "offset" w/ order', function(done) {
-      let statement = sqb.select().from('table1').orderBy('f1').offset(5);
-      let result = statement.build({
-        dialect: 'oracle'
-      });
-      assert.equal(result.sql, 'select * from (select rownum row$number, t.* from (select * from table1 order by f1) t) where row$number >= 5');
-      done();
-    });
-
-    it('should serialize "limit/offset" pretty print w/o order ', function(done) {
-      let statement = sqb.select().from('table1').offset(5).limit(10);
+    it('should serialize "limit/offset" pretty print', function(done) {
+      let statement = sqb.select()
+          .from('table1')
+          .offset(5)
+          .limit(10);
       let result = statement.build({
         dialect: 'oracle',
         prettyPrint: true
       });
       assert.equal(result.sql,
           'select * from (\n' +
-          '  select * from table1\n' +
-          ') where rownum >= 5 and rownum <= 15');
+          '  select /*+ first_rows(10) */ rownum row$number, t.* from (\n' +
+          '    select * from table1\n' +
+          '  ) t where rownum <= 14\n' +
+          ') where row$number >= 5');
       done();
     });
 
-    it('should serialize "limit/offset" pretty print w order ', function(done) {
+    it('should serialize "limit" ordered', function(done) {
       let statement = sqb.select()
           .from('table1')
-          .orderBy('f1')
-          .offset(5)
+          .as('t1')
+          .orderBy('id')
+          .limit(10);
+      let result = statement.build({
+        dialect: 'oracle'
+      });
+      assert.equal(result.sql, 'select t1.* from (select /*+ first_rows(10) */ rownum row$number, t.* from (select * from table1 order by id) t where rownum <= 9) t1');
+      done();
+    });
+
+    it('should serialize "limit" pretty print', function(done) {
+      let statement = sqb.select()
+          .from('table1')
+          .as('t1')
+          .orderBy('id')
           .limit(10);
       let result = statement.build({
         dialect: 'oracle',
         prettyPrint: true
       });
       assert.equal(result.sql,
-          'select * from (select rownum row$number, t.* from (\n' +
-          '  select * from table1\n' +
-          '  order by f1\n' +
-          ') t)\n'+
-          'where row$number >= 5 and row$number <= 15');
+          'select t1.* from (\n' +
+          '  select /*+ first_rows(10) */ rownum row$number, t.* from (\n' +
+          '    select * from table1\n' +
+          '    order by id\n' +
+          '  ) t where rownum <= 9\n' +
+          ') t1');
       done();
     });
 

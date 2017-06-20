@@ -22,33 +22,25 @@ class OracleSerializer extends Serializer {
    */
   _serializeSelect(obj, inf) {
     let out = super._serializeSelect(obj, inf);
-    const limit = this.statement._limit;
-    const offset = obj._offset;
+    const limit = this.statement._limit || 0;
+    const offset = obj._offset || 0;
     const a = obj._alias;
 
     if (limit || offset) {
       const order = this.statement._orderby;
       if (offset || (order && order.length)) {
-        out = 'select ' + (a ? a + '.' : '') +
-            '* from (select rownum row$number, t.* from (\n\t' +
+        out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
+            'select /*+ first_rows(' + (limit || 100) +
+            ') */ rownum row$number, t.* from (\n\t' +
             out + '\n\b' +
-            ') t)' + (a ? ' ' + a : '') +
-            '\nwhere';
-
+            ') t' + (limit ? ' where rownum <= ' + (limit + offset - 1) : '') +
+            '\n\b)' + (a ? ' ' + a : '');
         if (offset)
-          out += ' row$number >= ' + (offset + 1);
-        if (limit)
-          out += (offset ? ' and' : '') + ' row$number <= ' +
-              (limit + (offset || 0));
+          out += ' where row$number >= ' + (offset);
       } else {
         out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
             out + '\n\b' +
-            ') where';
-        if (offset)
-          out += ' rownum >= ' + (offset + 1);
-        if (limit)
-          out += (offset ? ' and' : '') + ' rownum <= ' +
-              (limit + (offset || 0));
+            ') where rownum <= ' + limit;
       }
     }
     return out;
