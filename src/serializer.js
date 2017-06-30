@@ -22,7 +22,7 @@ class OracleSerializer extends Serializer {
    */
   _serializeSelect(obj, inf) {
     let out = super._serializeSelect(obj, inf);
-    const limit = this.statement._limit || 0;
+    const limit = this.query._limit || 0;
     const offset = Math.max((obj._offset || 0) - 1, 0);
 
     if (limit || offset) {
@@ -33,7 +33,7 @@ class OracleSerializer extends Serializer {
         else out += (limit ? '\nFETCH FIRST ' + limit + ' ROWS ONLY' : '');
       } else {
         const a = obj._alias;
-        const order = this.statement._orderby;
+        const order = this.query._orderby;
         if (offset || (order && order.length)) {
           out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
               'select /*+ first_rows(' + (limit || 100) +
