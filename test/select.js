@@ -95,7 +95,7 @@ describe('Oracle select queries', function() {
       let result = query.build({
         dialect: 'oracle'
       });
-      assert.equal(result.sql, 'select * from (select /*+ first_rows(10) */ rownum row$number, t.* from (select * from table1) t where rownum <= 14) where row$number >= 5');
+      assert.equal(result.sql, 'select * from (select /*+ first_rows(10) */ t.*, rownum row$number from (select * from table1) t where rownum <= 14) where row$number >= 5');
       done();
     });
 
@@ -110,7 +110,7 @@ describe('Oracle select queries', function() {
       });
       assert.equal(result.sql,
           'select * from (\n' +
-          '  select /*+ first_rows(10) */ rownum row$number, t.* from (\n' +
+          '  select /*+ first_rows(10) */ t.*, rownum row$number from (\n' +
           '    select * from table1\n' +
           '  ) t where rownum <= 14\n' +
           ') where row$number >= 5');
@@ -126,7 +126,7 @@ describe('Oracle select queries', function() {
       let result = query.build({
         dialect: 'oracle'
       });
-      assert.equal(result.sql, 'select t1.* from (select /*+ first_rows(10) */ rownum row$number, t.* from (select * from table1 order by id) t where rownum <= 10) t1');
+      assert.equal(result.sql, 'select t1.* from (select /*+ first_rows(10) */ t.*, rownum row$number from (select * from table1 order by id) t where rownum <= 10) t1');
       done();
     });
 
@@ -143,7 +143,7 @@ describe('Oracle select queries', function() {
       });
       assert.equal(result.sql,
           'select t1.* from (\n' +
-          '  select /*+ first_rows(10) */ rownum row$number, t.* from (\n' +
+          '  select /*+ first_rows(10) */ t.*, rownum row$number from (\n' +
           '    select * from table1\n' +
           '    order by id\n' +
           '  ) t where rownum <= 31\n' +

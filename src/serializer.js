@@ -37,7 +37,7 @@ class OracleSerializer extends Serializer {
         if (offset || (order && order.length)) {
           out = 'select ' + (a ? a + '.' : '') + '* from (\n\t' +
               'select /*+ first_rows(' + (limit || 100) +
-              ') */ rownum row$number, t.* from (\n\t' +
+              ') */ t.*, rownum row$number from (\n\t' +
               out + '\n\b' +
               ') t' +
               (limit ? ' where rownum <= ' + (limit + offset) : '') +
