@@ -8,7 +8,7 @@
   ],
   "license": "MIT",
   "repository": "panates/sqb-serializer-oracle",
-  "main": "src/serializer.js",
+  "main": "lib/index.js",
   "keywords": [
     "javascript",
     "sqb",
@@ -26,16 +26,13 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.4.2"
   },
-  "peerDependencies": {
-    "sqb": "^0.6.4"
-  },
   "engines": {
     "node": ">= 6.0"
   },
   "files": [
     "LICENSE",
     "README.md",
-    "src/"
+    "lib/"
   ],
   "scripts": {
     "test": "mocha --require test/support/env --reporter spec --bail --check-leaks test/",
