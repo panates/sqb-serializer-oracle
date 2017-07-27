@@ -90,7 +90,7 @@ describe('Oracle select queries', function() {
     it('should serialize "limit/offset"', function(done) {
       let query = sqb.select()
           .from('table1')
-          .offset(5)
+          .offset(4)
           .limit(10);
       let result = query.generate({
         dialect: 'oracle'
@@ -102,7 +102,7 @@ describe('Oracle select queries', function() {
     it('should serialize "limit/offset" pretty print', function(done) {
       let query = sqb.select()
           .from('table1')
-          .offset(5)
+          .offset(4)
           .limit(10);
       let result = query.generate({
         dialect: 'oracle',
@@ -135,7 +135,7 @@ describe('Oracle select queries', function() {
           .from('table1')
           .as('t1')
           .orderBy('id')
-          .offset(22)
+          .offset(21)
           .limit(10);
       let result = query.generate({
         dialect: 'oracle',
@@ -181,7 +181,7 @@ describe('Oracle select queries', function() {
     it('should serialize "limit/offset"', function(done) {
       let query = sqb.select()
           .from('table1')
-          .offset(5)
+          .offset(4)
           .limit(10);
       let result = query.generate({
         dialect: 'oracle',
@@ -194,7 +194,7 @@ describe('Oracle select queries', function() {
     it('should serialize "limit/offset" pretty print', function(done) {
       let query = sqb.select()
           .from('table1')
-          .offset(5)
+          .offset(4)
           .limit(10);
       let result = query.generate({
         dialect: 'oracle',
