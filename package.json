@@ -20,17 +20,17 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
-    "eslint": "^4.6.1",
+    "babel-eslint": "^8.0.1",
+    "eslint": "^4.9.0",
     "eslint-config-google": "^0.9.1",
     "istanbul": "^0.4.5",
-    "mocha": "^3.5.0"
+    "mocha": "^4.0.1"
   },
   "peerDependencies": {
-    "sqb": "^0.7.10"
+    "sqb": "^0.8.2"
   },
   "engines": {
-    "node": ">= 6.0"
+    "node": ">= 4.0"
   },
   "files": [
     "LICENSE",

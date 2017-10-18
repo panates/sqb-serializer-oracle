@@ -8,15 +8,15 @@ sqb.use(require('../'));
 describe('Oracle select queries', function() {
 
   it('should use dual when no table given', function(done) {
-    let query = sqb.select().from();
-    let result = query.generate('oracle');
+    var query = sqb.select().from();
+    var result = query.generate('oracle');
     assert.equal(result.sql, 'select * from dual');
     done();
   });
 
   it('should replace "= null" to "is null"', function(done) {
-    let query = sqb.select().from().where(['ID', null]);
-    let result = query.generate({
+    var query = sqb.select().from().where(['ID', null]);
+    var result = query.generate({
       dialect: 'oracle'
     });
     assert.equal(result.sql, 'select * from dual where ID is null');
@@ -24,8 +24,8 @@ describe('Oracle select queries', function() {
   });
 
   it('should replace "!= null" to "is not null"', function(done) {
-    let query = sqb.select().from().where(['ID', '!=', null]);
-    let result = query.generate({
+    var query = sqb.select().from().where(['ID', '!=', null]);
+    var result = query.generate({
       dialect: 'oracle'
     });
     assert.equal(result.sql, 'select * from dual where ID is not null');
@@ -33,8 +33,8 @@ describe('Oracle select queries', function() {
   });
 
   it('should replace "<> null" to "is not null"', function(done) {
-    let query = sqb.select().from().where(['ID', '!=', null]);
-    let result = query.generate({
+    var query = sqb.select().from().where(['ID', '!=', null]);
+    var result = query.generate({
       dialect: 'oracle'
     });
     assert.equal(result.sql, 'select * from dual where ID is not null');
@@ -42,10 +42,10 @@ describe('Oracle select queries', function() {
   });
 
   it('should serialize date-time with "to_date()" function', function(done) {
-    let query = sqb.select()
+    var query = sqb.select()
         .from('table1')
         .where(['dt', new Date(2017, 0, 1, 10, 30, 15)]);
-    let result = query.generate({
+    var result = query.generate({
       dialect: 'oracle'
     });
     assert.equal(result.sql, 'select * from table1 where dt = to_date(\'2017-01-01 10:30:15\', \'yyyy-mm-dd hh24:mi:ss\')');
@@ -53,10 +53,10 @@ describe('Oracle select queries', function() {
   });
 
   it('should serialize date with "to_date()" function', function(done) {
-    let query = sqb.select()
+    var query = sqb.select()
         .from('table1')
         .where(['dt', new Date(2017, 0, 1, 0, 0, 0)]);
-    let result = query.generate({
+    var result = query.generate({
       dialect: 'oracle'
     });
     assert.equal(result.sql, 'select * from table1 where dt = to_date(\'2017-01-01\', \'yyyy-mm-dd\')');
@@ -66,8 +66,8 @@ describe('Oracle select queries', function() {
   describe('Oracle server version <= 11', function() {
 
     it('should serialize "limit"', function(done) {
-      let query = sqb.select().from('table1').as('t1').limit(10);
-      let result = query.generate({
+      var query = sqb.select().from('table1').as('t1').limit(10);
+      var result = query.generate({
         dialect: 'oracle'
       });
       assert.equal(result.sql, 'select t1.* from (select * from table1) where rownum <= 10');
@@ -75,8 +75,8 @@ describe('Oracle select queries', function() {
     });
 
     it('should serialize "limit" pretty print', function(done) {
-      let query = sqb.select().from('table1').as('t1').limit(10);
-      let result = query.generate({
+      var query = sqb.select().from('table1').as('t1').limit(10);
+      var result = query.generate({
         dialect: 'oracle',
         prettyPrint: true
       });
@@ -88,11 +88,11 @@ describe('Oracle select queries', function() {
     });
 
     it('should serialize "limit/offset"', function(done) {
-      let query = sqb.select()
+      var query = sqb.select()
           .from('table1')
           .offset(4)
           .limit(10);
-      let result = query.generate({
+      var result = query.generate({
         dialect: 'oracle'
       });
       assert.equal(result.sql, 'select * from (select /*+ first_rows(10) */ t.*, rownum row$number from (select * from table1) t where rownum <= 14) where row$number >= 5');
@@ -100,11 +100,11 @@ describe('Oracle select queries', function() {
     });
 
     it('should serialize "limit/offset" pretty print', function(done) {
-      let query = sqb.select()
+      var query = sqb.select()
           .from('table1')
           .offset(4)
           .limit(10);
-      let result = query.generate({
+      var result = query.generate({
         dialect: 'oracle',
         prettyPrint: true
       });
@@ -118,12 +118,12 @@ describe('Oracle select queries', function() {
     });
 
     it('should serialize "limit" ordered', function(done) {
-      let query = sqb.select()
+      var query = sqb.select()
           .from('table1')
           .as('t1')
           .orderBy('id')
           .limit(10);
-      let result = query.generate({
+      var result = query.generate({
         dialect: 'oracle'
       });
       assert.equal(result.sql, 'select t1.* from (select /*+ first_rows(10) */ t.*, rownum row$number from (select * from table1 order by id) t where rownum <= 10) t1');
@@ -131,13 +131,13 @@ describe('Oracle select queries', function() {
     });
 
     it('should serialize "limit" ordered pretty print', function(done) {
-      let query = sqb.select()
+      var query = sqb.select()
           .from('table1')
           .as('t1')
           .orderBy('id')
           .offset(21)
           .limit(10);
-      let result = query.generate({
+      var result = query.generate({
         dialect: 'oracle',
         prettyPrint: true
       });
@@ -156,8 +156,8 @@ describe('Oracle select queries', function() {
   describe('Oracle server version >= 12', function() {
 
     it('should serialize "limit"', function(done) {
-      let query = sqb.select().from('table1').as('t1').limit(10);
-      let result = query.generate({
+      var query = sqb.select().from('table1').as('t1').limit(10);
+      var result = query.generate({
         dialect: 'oracle',
         serverVersion: 12
       });
@@ -166,8 +166,8 @@ describe('Oracle select queries', function() {
     });
 
     it('should serialize "limit" pretty print', function(done) {
-      let query = sqb.select().from('table1').as('t1').limit(10);
-      let result = query.generate({
+      var query = sqb.select().from('table1').as('t1').limit(10);
+      var result = query.generate({
         dialect: 'oracle',
         serverVersion: 12,
         prettyPrint: true
@@ -179,11 +179,11 @@ describe('Oracle select queries', function() {
     });
 
     it('should serialize "limit/offset"', function(done) {
-      let query = sqb.select()
+      var query = sqb.select()
           .from('table1')
           .offset(4)
           .limit(10);
-      let result = query.generate({
+      var result = query.generate({
         dialect: 'oracle',
         serverVersion: 12
       });
@@ -192,11 +192,11 @@ describe('Oracle select queries', function() {
     });
 
     it('should serialize "limit/offset" pretty print', function(done) {
-      let query = sqb.select()
+      var query = sqb.select()
           .from('table1')
           .offset(4)
           .limit(10);
-      let result = query.generate({
+      var result = query.generate({
         dialect: 'oracle',
         serverVersion: 12,
         prettyPrint: true
