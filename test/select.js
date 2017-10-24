@@ -63,6 +63,16 @@ describe('Oracle select queries', function() {
     done();
   });
 
+  it('Should serialize params', function(done) {
+    var query = sqb.select().from('table1').where(['ID', /ID/]);
+    var result = query.generate({
+      dialect: 'oracle'
+    }, {ID: 5});
+    assert.equal(result.sql, 'select * from table1 where ID = :ID');
+    assert.deepEqual(result.values, {ID: 5});
+    done();
+  });
+
   describe('Oracle server version <= 11', function() {
 
     it('should serialize "limit"', function(done) {
