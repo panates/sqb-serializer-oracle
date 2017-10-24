@@ -12,7 +12,7 @@ SQB-serialization plugin for Oracle dialect
 
 ## Node Compatibility
 
-  - node `>= 6.x`;
+  - node `>= 4.0`;
   
 ### License
 [MIT](LICENSE)
