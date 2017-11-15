@@ -20,14 +20,14 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "babel-eslint": "^8.0.1",
-    "eslint": "^4.9.0",
+    "babel-eslint": "^8.0.2",
+    "eslint": "^4.11.0",
     "eslint-config-google": "^0.9.1",
     "istanbul": "^0.4.5",
     "mocha": "^4.0.1"
   },
   "peerDependencies": {
-    "sqb": "^0.10.0"
+    "sqb": "^0.12.1"
   },
   "engines": {
     "node": ">= 4.0"
