@@ -10,7 +10,6 @@ cache:
   directories:
     - node_modules
 before_install:
-  - "npm install sqb --save"
   - "test ! -d node_modules || npm prune"
   - "test ! -d node_modules || npm rebuild"
 script:
