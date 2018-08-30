@@ -6,8 +6,8 @@ const assert = require('assert'),
 
 sqb.use(require('../'));
 
-var query;
-var result;
+let query;
+let result;
 
 describe('Oracle select queries', function() {
 
@@ -22,7 +22,7 @@ describe('Oracle select queries', function() {
   });
 
   it('should replace "= null" to "is null"', function(done) {
-    query = sqb.select().from().where(Op.eq('ID', null));
+    query = sqb.select().from().where({'ID': null});
     result = query.generate({
       dialect: 'oracle',
       prettyPrint: 0
@@ -32,7 +32,7 @@ describe('Oracle select queries', function() {
   });
 
   it('should replace "!= null" to "is not null"', function(done) {
-    query = sqb.select().from().where(Op.ne('ID', null));
+    query = sqb.select().from().where({'ID !=': null});
     result = query.generate({
       dialect: 'oracle',
       prettyPrint: 0
@@ -69,8 +69,9 @@ describe('Oracle select queries', function() {
     query = sqb.select().from('table1').where(Op.eq('ID', /ID/));
     result = query.generate({
       dialect: 'oracle',
-      prettyPrint: 0
-    }, {ID: 5});
+      prettyPrint: 0,
+      values: {ID: 5}
+    });
     assert.equal(result.sql, 'select * from table1 where ID = :ID');
     assert.deepEqual(result.values, {ID: 5});
     done();
