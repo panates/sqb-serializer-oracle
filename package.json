@@ -1,7 +1,7 @@
 {
   "name": "sqb-serializer-oracle",
   "description": "SQB serialization plugin for Oracle database",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "author": "Panates Ltd.",
   "contributors": [
     "Eray Hanoglu <e.hanoglu@panates.com>"
@@ -25,7 +25,7 @@
     "eslint-config-google": "^0.10.0",
     "nyc": "^13.0.1",
     "mocha": "^5.2.0",
-    "sqb": "^3.4.3"
+    "sqb": "^3.4.4"
   },
   "peerDependencies": {},
   "engines": {
