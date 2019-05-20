@@ -24,11 +24,11 @@
   "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.11.1",
-    "eslint-config-google": "^0.11.0",
-    "nyc": "^13.1.0",
-    "mocha": "^5.2.0",
-    "sqb": "^3.6.1"
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "sqb": "^3.8.6"
   },
   "peerDependencies": {
     "sqb": "^3.6.1"
